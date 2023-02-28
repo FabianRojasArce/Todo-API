@@ -24,6 +24,36 @@ app.UseSwaggerUI(c =>
    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API V1");
 });
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/todos", async (TodoDb db) => await db.Todos.ToListAsync());
 
+app.MapPost("/todo", async (TodoDb db, Todo todo) =>
+{
+    await db.Todos.AddAsync(todo);
+    await db.SaveChangesAsync();
+    return Results.Created($"/todo/{todo.Id}", todo);
+});
+
+app.MapGet("/todo/{id}", async (TodoDb db, int id) => await db.Todos.FindAsync(id));
+
+app.MapPut("/todo/{id}", async (TodoDb db, Todo updatetodo, int id) =>
+{
+      var todo = await db.Todos.FindAsync(id);
+      if (todo is null) return Results.NotFound();
+      todo.Nombre = updatetodo.Nombre;
+      todo.Descripcion = updatetodo.Descripcion;
+      await db.SaveChangesAsync();
+      return Results.NoContent();
+});
+
+app.MapDelete("/todo/{id}", async (TodoDb db, int id) =>
+{
+   var todo = await db.Todos.FindAsync(id);
+   if (todo is null)
+   {
+      return Results.NotFound();
+   }
+   db.Todos.Remove(todo);
+   await db.SaveChangesAsync();
+   return Results.Ok();
+});
 app.Run();
