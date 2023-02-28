@@ -1,8 +1,13 @@
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using TodoApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("Todos") ?? "Data Source=Todos.db";
+
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSqlite<TodoDb>(connectionString);
 builder.Services.AddSwaggerGen(c =>
 {
      c.SwaggerDoc("v1", new OpenApiInfo {
