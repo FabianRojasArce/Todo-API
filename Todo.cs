@@ -3,10 +3,10 @@ namespace TodoApi.Models
 {
     public enum TiposEstado
     {
-        SinEstado,
-        PorHacer,
-        Haciendo,
-        Hecho,
+        SinEstado = 1,
+        PorHacer = 2,
+        Haciendo = 3,
+        Hecho = 4,
     }
     public class Todo
     {
