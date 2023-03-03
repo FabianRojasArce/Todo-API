@@ -49,6 +49,12 @@ app.MapPost("/todo", async (TodoDb db, Todo todo) =>
 
 app.MapGet("/todo/{id}", async (TodoDb db, int id) => await db.Todos.FindAsync(id));
 
+app.MapGet("/todoTipo/{tipo}", async (TodoDb db, int tipo) => {
+
+   TiposEstado estado = (TiposEstado)tipo;
+   return await db.Todos.Where(a => a.Estado == estado).ToListAsync();
+});
+
 app.MapPut("/todo/{id}", async (TodoDb db, Todo updatetodo, int id) =>
 {
       var todo = await db.Todos.FindAsync(id);
