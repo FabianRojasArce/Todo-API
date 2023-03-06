@@ -61,6 +61,16 @@ app.MapPut("/todo/{id}", async (TodoDb db, Todo updatetodo, int id) =>
       if (todo is null) return Results.NotFound();
       todo.Nombre = updatetodo.Nombre;
       todo.Descripcion = updatetodo.Descripcion;
+      todo.Estado = updatetodo.Estado;
+      await db.SaveChangesAsync();
+      return Results.NoContent();
+});
+
+app.MapPut("/todoEstado/{id}", async (TodoDb db, Todo updatetodo, int id) =>
+{
+      var todo = await db.Todos.FindAsync(id);
+      if (todo is null) return Results.NotFound();
+      todo.Estado = updatetodo.Estado;
       await db.SaveChangesAsync();
       return Results.NoContent();
 });
