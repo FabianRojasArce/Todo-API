@@ -16,9 +16,4 @@ namespace TodoApi.Models
         public TiposEstado Estado { get; set; } = TiposEstado.SinEstado;
     }
 
-    class TodoDb : DbContext
-{
-    public TodoDb(DbContextOptions options) : base(options) { }
-    public DbSet<Todo> Todos { get; set; } = null!;
-}
 }

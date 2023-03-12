@@ -1,11 +1,12 @@
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
+using TodoApi.Data;
+using TodoApi.Services;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -17,10 +18,8 @@ builder.Services.AddCors(options =>
                       });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("Todos") ?? "Data Source=Todos.db";
-
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSqlite<TodoDb>(connectionString);
+builder.Services.AddSqlite<TodoContext>("Data Source=Todos.db");
 builder.Services.AddSwaggerGen(c =>
 {
      c.SwaggerDoc("v1", new OpenApiInfo {
@@ -28,6 +27,7 @@ builder.Services.AddSwaggerGen(c =>
          Description = "Tablero de tareas",
          Version = "v1" });
 });
+builder.Services.AddScoped<TodoService>();
 
 var app = builder.Build();
 
@@ -38,52 +38,10 @@ app.UseSwaggerUI(c =>
    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API V1");
 });
 
-app.MapGet("/todos", async (TodoDb db) => await db.Todos.ToListAsync());
+app.UseHttpsRedirection();
 
-app.MapPost("/todo", async (TodoDb db, Todo todo) =>
-{
-    await db.Todos.AddAsync(todo);
-    await db.SaveChangesAsync();
-    return Results.Created($"/todo/{todo.Id}", todo);
-});
+app.UseAuthorization();
 
-app.MapGet("/todo/{id}", async (TodoDb db, int id) => await db.Todos.FindAsync(id));
+app.MapControllers();
 
-app.MapGet("/todoTipo/{tipo}", async (TodoDb db, int tipo) => {
-
-   TiposEstado estado = (TiposEstado)tipo;
-   return await db.Todos.Where(a => a.Estado == estado).ToListAsync();
-});
-
-app.MapPut("/todo/{id}", async (TodoDb db, Todo updatetodo, int id) =>
-{
-      var todo = await db.Todos.FindAsync(id);
-      if (todo is null) return Results.NotFound();
-      todo.Nombre = updatetodo.Nombre;
-      todo.Descripcion = updatetodo.Descripcion;
-      todo.Estado = updatetodo.Estado;
-      await db.SaveChangesAsync();
-      return Results.NoContent();
-});
-
-app.MapPut("/todoEstado/{id}", async (TodoDb db, Todo updatetodo, int id) =>
-{
-      var todo = await db.Todos.FindAsync(id);
-      if (todo is null) return Results.NotFound();
-      todo.Estado = updatetodo.Estado;
-      await db.SaveChangesAsync();
-      return Results.NoContent();
-});
-
-app.MapDelete("/todo/{id}", async (TodoDb db, int id) =>
-{
-   var todo = await db.Todos.FindAsync(id);
-   if (todo is null)
-   {
-      return Results.NotFound();
-   }
-   db.Todos.Remove(todo);
-   await db.SaveChangesAsync();
-   return Results.Ok();
-});
 app.Run();
