@@ -1,11 +1,13 @@
 using TodoApi.Services;
 using TodoApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TodoApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class TodoController : ControllerBase
 {
     TodoService _service;
