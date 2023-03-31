@@ -7,7 +7,8 @@ Api generada con:
     - Microsoft.EntityFrameworkCore.Design
     - Microsoft.EntityFrameworkCore.Sqlite
     - Swashbuckle.AspNetCore
-
+    - Microsoft.AspNetCore.Identity.EntityFrameworkCore
+    - Microsoft.VisualStudio.Web.CodeGeneration.Design
 
 # Instrucciones
 
