@@ -11,14 +11,12 @@ Api generada con:
 
 # Instrucciones
 
-1. Generar las migraciones:
+1. Si existe, borre la base de datos de SQlite del directorio ("Todos.db")
 
-    `dotnet ef migrations add InitialCreate`
-
-2. Generar la base de datos SQLITE:
+2. Gener la base de datos SQLITE:
 
     `dotnet ef database update`
 
-3. Ejecutar la aplicación:
+3. Ejecute la aplicación:
 
     `dotnet run`
