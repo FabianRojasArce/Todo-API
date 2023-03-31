@@ -1,10 +1,14 @@
 using Microsoft.OpenApi.Models;
 using TodoApi.Data;
 using TodoApi.Services;
+using Microsoft.AspNetCore.Identity;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<TodoContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -14,7 +18,8 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://localhost:4200")
                           .AllowAnyHeader()
-                           .AllowAnyMethod();
+                           .AllowAnyMethod()
+                           .AllowCredentials();
                       });
 });
 
@@ -40,6 +45,7 @@ app.UseSwaggerUI(c =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
