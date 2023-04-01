@@ -6,6 +6,10 @@
 # SQLite
 Todos.db
 
+
+# VsCode
+.vscode
+
 # User-specific files
 *.rsuser
 *.suo
