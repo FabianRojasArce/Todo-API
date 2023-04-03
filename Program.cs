@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using TodoApi.Data;
-using TodoApi.Services;
 using Microsoft.AspNetCore.Identity;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -32,7 +31,6 @@ builder.Services.AddSwaggerGen(c =>
          Description = "Tablero de tareas",
          Version = "v1" });
 });
-builder.Services.AddScoped<TodoService>();
 
 var app = builder.Build();
 

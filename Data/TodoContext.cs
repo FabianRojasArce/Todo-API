@@ -12,5 +12,5 @@ public class TodoContext : IdentityDbContext
     {
     }
 
-    public DbSet<Todo> Todos => Set<Todo>();
+    public DbSet<Tarea> Tareas { get; set; } = default!;
 }
