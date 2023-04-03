@@ -5,12 +5,19 @@ using TodoApi.Models;
 
 namespace TodoApi.Data;
 
-public class TodoContext : IdentityDbContext
+public class TodoContext : IdentityDbContext<User>
 {
     public TodoContext (DbContextOptions<TodoContext> options)
         : base(options)
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<User>()
+            .HasMany(c => c.Tareas)
+            .WithOne(e => e.User);
+    }
     public DbSet<Tarea> Tareas { get; set; } = default!;
 }

@@ -1,12 +1,12 @@
 using Microsoft.OpenApi.Models;
 using TodoApi.Data;
-using Microsoft.AspNetCore.Identity;
+using TodoApi.Models;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddDefaultIdentity<User>()
     .AddEntityFrameworkStores<TodoContext>();
 
 builder.Services.AddControllers();

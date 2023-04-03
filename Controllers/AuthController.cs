@@ -4,19 +4,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Security.Claims;
+using TodoApi.Models;
 
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
 
     public AuthController(
         IConfiguration configuration,
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
         ILogger<AuthController> logger
     )
     {
@@ -31,7 +32,7 @@ public class AuthController : ControllerBase
     {
         if (form.Email != null && form.Password != null && form.ConfirmPassword != null){
             string userName = form.Email.Split('@')[0];
-            var user = new IdentityUser { Email = form.Email, UserName = userName };
+            var user = new User { Email = form.Email, UserName = userName };
             var result = await _userManager.CreateAsync(user, form.Password);
             if (result.Succeeded)
             {

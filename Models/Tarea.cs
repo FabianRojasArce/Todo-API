@@ -5,6 +5,8 @@ namespace TodoApi.Models{
         public string? Nombre { get; set; }
         public string? Descripcion { get; set; }
         public TiposEstado Estado { get; set; } = TiposEstado.SinEstado;
+        public User? User { get; set; }
+        public string? UserId { get; set; }
     }
     
     public enum TiposEstado
