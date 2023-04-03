@@ -5,6 +5,7 @@
 
 # SQLite
 Todos.db
+Todos.db-*
 
 
 # VsCode
