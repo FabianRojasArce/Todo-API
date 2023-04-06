@@ -90,6 +90,12 @@ public class AuthController : ControllerBase
         public string? ConfirmPassword {get; set; }
     }
 
+    [HttpGet("isAuthenticated")]
+    public IActionResult IsAuthenticated()
+    {
+        return Ok(User?.Identity?.IsAuthenticated);
+    }
+
 
     // [HttpPost]
     // [Route("login")]
