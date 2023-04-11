@@ -149,25 +149,6 @@ namespace TodoApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TodoApi.Models.Tablero", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tableros");
-                });
-
             modelBuilder.Entity("TodoApi.Models.Tarea", b =>
                 {
                     b.Property<int>("Id")
@@ -183,15 +164,10 @@ namespace TodoApi.Migrations
                     b.Property<string>("Nombre")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TableroId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TableroId");
 
                     b.HasIndex("UserId");
 
@@ -313,39 +289,17 @@ namespace TodoApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TodoApi.Models.Tablero", b =>
-                {
-                    b.HasOne("TodoApi.Models.User", "User")
-                        .WithMany("Tableros")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TodoApi.Models.Tarea", b =>
                 {
-                    b.HasOne("TodoApi.Models.Tablero", "Tablero")
-                        .WithMany("Tareas")
-                        .HasForeignKey("TableroId");
-
                     b.HasOne("TodoApi.Models.User", "User")
                         .WithMany("Tareas")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Tablero");
-
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TodoApi.Models.Tablero", b =>
-                {
-                    b.Navigation("Tareas");
                 });
 
             modelBuilder.Entity("TodoApi.Models.User", b =>
                 {
-                    b.Navigation("Tableros");
-
                     b.Navigation("Tareas");
                 });
 #pragma warning restore 612, 618
