@@ -10,5 +10,6 @@ namespace TodoApi.Models;
 public class User : IdentityUser
 {
     public ICollection<Tarea> Tareas { get; set; } = default!;
+    public ICollection<Listado> Listados { get; set; } = default!;
 }
 

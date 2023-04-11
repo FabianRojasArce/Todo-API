@@ -16,8 +16,12 @@ public class TodoContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
         builder.Entity<User>()
-            .HasMany(c => c.Tareas)
+            .HasMany(c => c.Listados)
             .WithOne(e => e.User);
+        builder.Entity<Listado>()
+            .HasMany(c => c.Tareas)
+            .WithOne(e => e.Listado);
     }
     public DbSet<Tarea> Tareas { get; set; } = default!;
+    public DbSet<Listado> Listados { get; set; } = default!;
 }
