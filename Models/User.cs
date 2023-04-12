@@ -9,6 +9,8 @@ namespace TodoApi.Models;
 // Add profile data for application users by adding properties to the User class
 public class User : IdentityUser
 {
+    public string Nombre { get; set; } = "";
+    public string Apellido { get; set; } = "";
     public ICollection<Tarea> Tareas { get; set; } = default!;
     public ICollection<Listado> Listados { get; set; } = default!;
 }

@@ -30,9 +30,15 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterForm form)
     {
-        if (form.Email != null && form.Password != null && form.ConfirmPassword != null){
+        if (
+            form.Email != null &&
+            form.Password != null &&
+            form.ConfirmPassword != null &&
+            form.Nombre != null &&
+            form.Apellido != null
+        ){
             string userName = form.Email.Split('@')[0];
-            var user = new User { Email = form.Email, UserName = userName };
+            var user = new User { Email = form.Email, UserName = userName, Nombre = form.Nombre, Apellido = form.Apellido };
             var result = await _userManager.CreateAsync(user, form.Password);
             if (result.Succeeded)
             {
@@ -88,6 +94,8 @@ public class AuthController : ControllerBase
         public string? Email {get; set; }
         public string? Password {get; set; }
         public string? ConfirmPassword {get; set; }
+        public string? Nombre { get; set; }
+        public string? Apellido { get; set; }
     }
 
     [HttpGet("isAuthenticated")]
