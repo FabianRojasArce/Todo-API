@@ -102,6 +102,17 @@ namespace TodoApi
                 return BadRequest();
             }
 
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("El archivo de imagen es nulo o vacío.");
+            }
+
+            // Verificar si el archivo es una imagen
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                return BadRequest("El archivo no es una imagen.");
+            }
+
             byte[] imageData;
             using (var stream = new MemoryStream())
             {
