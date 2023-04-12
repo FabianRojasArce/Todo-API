@@ -47,6 +47,19 @@ namespace TodoApi
             return user;
         }
 
+        [HttpGet("foto")]
+        public async Task<IActionResult> GetUserFoto()
+        {
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (usuarioActual == null)
+            {
+                return Unauthorized();
+            }
+
+            return File(usuarioActual.Foto, "image/jpeg");
+        }
+
         [HttpPut]
         public async Task<IActionResult> PutUser(UserForm userForm)
         {
@@ -78,6 +91,29 @@ namespace TodoApi
             }
 
             return NoContent();
+        }
+
+        [HttpPost("foto")]
+        public async Task<IActionResult> UploadPhoto(IFormFile file)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            byte[] imageData;
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                imageData = stream.ToArray();
+            }
+
+            // Update the user's photo property
+            user.Foto = imageData;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
         }
 
         [HttpDelete]
