@@ -7,7 +7,6 @@ using TodoApi.Models;
 
 namespace TodoApi
 {
-    [Route("tareas")]
     [ApiController]
     [Authorize]
     public class TareaController : ControllerBase
@@ -21,7 +20,7 @@ namespace TodoApi
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("listado/{listadoId}/tareas")]
         public async Task<IActionResult> GetTarea(int listadoId)
         {
             var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
@@ -49,7 +48,7 @@ namespace TodoApi
             return Ok(tareas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("listado/{listadoId}/tareas/{id}")]
         public async Task<IActionResult> GetTareaId(int id, int listadoId)
         {
             var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
@@ -81,7 +80,7 @@ namespace TodoApi
             return Ok(tareas);
         }
 
-        [HttpGet("tareaTipo/{estado}")]
+        [HttpGet("listado/{listadoId}/tareas/tareaTipo/{estado}")]
         public async Task<ActionResult<Tarea>> GetTareaByEstado(int estado, int listadoId)
         {
             TiposEstado e = (TiposEstado)estado;
@@ -114,7 +113,7 @@ namespace TodoApi
             return Ok(tareas);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("tareas/{id}")]
         public async Task<IActionResult> PutTarea(int id, TareaForm tareaForm)
         {
             if (id != tareaForm.Id)
@@ -158,7 +157,7 @@ namespace TodoApi
             return NoContent();
         }
 
-        [HttpPut("estado/{id}")]
+        [HttpPut("tareas/estado/{id}")]
         public async Task<IActionResult> PutTareaEstado(int id, TareaForm tareaForm)
         {
             if (id != tareaForm.Id)
@@ -173,7 +172,7 @@ namespace TodoApi
                 return Unauthorized();
             }
 
-            var tablero = _context.Tareas.Find(tareaForm.ListadoId);
+            var tablero = _context.Listados.Find(tareaForm.ListadoId);
             if (tablero == null) 
                 return BadRequest();
                 
@@ -209,7 +208,7 @@ namespace TodoApi
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpPost("tareas")]
         public async Task<ActionResult<Tarea>> PostTarea(TareaForm tarea)
         {
             if (_context.Tareas == null)
@@ -242,11 +241,11 @@ namespace TodoApi
 
             tarea.Id = newTarea.Id;
 
-            return CreatedAtAction("GetTarea", new { id = tarea.Id }, tarea);
+            return CreatedAtAction("GetTareaId", new { id = tarea.Id, listadoId = tarea.ListadoId }, tarea);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTarea(int id, int listadoId)
+        [HttpDelete("tareas/{id}")]
+        public async Task<IActionResult> DeleteTarea(int id)
         {
             var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
             if (usuarioActual == null)
@@ -255,7 +254,7 @@ namespace TodoApi
             }
 
             var tarea = _context.Tareas
-                .Where(t => t.UserId == usuarioActual.Id && t.Id == id && t.ListadoId == listadoId)
+                .Where(t => t.UserId == usuarioActual.Id && t.Id == id)
                 .Select(
                     t =>
                         new
