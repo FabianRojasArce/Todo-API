@@ -38,7 +38,8 @@ namespace TodoApi
                         new
                         {
                             Id = t.Id,
-                            Nombre = $"{t.Nombre}"
+                            Nombre = $"{t.Nombre}",
+                            Archivado = t.Archivado
                         }
                 )
                 .ToList();
@@ -63,7 +64,8 @@ namespace TodoApi
                         new
                         {
                             Id = t.Id,
-                            Nombre = $"{t.Nombre}"
+                            Nombre = $"{t.Nombre}",
+                            Archivado =  t.Archivado
                         }
                 )
                 .SingleOrDefault();
@@ -121,6 +123,49 @@ namespace TodoApi
             return NoContent();
         }
 
+        [HttpPut("archivar/{id}")]
+        public async Task<IActionResult> PutTableroArchivado(int id, TableroForm tableroForm)
+        {
+            if (id != tableroForm.Id)
+            {
+                return BadRequest();
+            }
+
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (usuarioActual == null)
+            {
+                return Unauthorized();
+            }
+
+            var tablero = _context.Listados.Find(id);
+            if (tablero == null)
+            {
+                return BadRequest();
+            }
+
+            tablero.Archivado = tableroForm.Archivado;
+            _context.Entry(tablero).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TableroExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // POST: api/Tablero
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -144,6 +189,7 @@ namespace TodoApi
 
             Listado newTablero = new Listado { };
             newTablero.Nombre = tableroForm.Nombre;
+            newTablero.Archivado = tableroForm.Archivado;
             newTablero.User = currentUser;
             newTablero.UserId = currentUser.Id;
             currentUser?.Listados.Add(newTablero);
@@ -172,7 +218,8 @@ namespace TodoApi
                         new
                         {
                             Id = t.Id,
-                            Nombre = $"{t.Nombre}"
+                            Nombre = $"{t.Nombre}",
+                            Archivado = t.Archivado
                         }
                 )
                 .SingleOrDefault();
@@ -205,6 +252,7 @@ namespace TodoApi
         {
             public int Id { get; set; }
             public string? Nombre { get; set; }
+            public bool? Archivado { get; set; }
         }
     }
 }
