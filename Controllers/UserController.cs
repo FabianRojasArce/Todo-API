@@ -37,13 +37,21 @@ namespace TodoApi
             }
 
             var email = "";
-            if (usuarioActual.Email != null){
+            if (usuarioActual.Email != null)
+            {
                 email = usuarioActual.Email;
-            }else{
+            }
+            else
+            {
                 return BadRequest();
             }
 
-            var user = new UserForm { Nombre = usuarioActual.Nombre, Apellido = usuarioActual.Apellido, Email = email };
+            var user = new UserForm
+            {
+                Nombre = usuarioActual.Nombre,
+                Apellido = usuarioActual.Apellido,
+                Email = email
+            };
             return user;
         }
 
@@ -148,7 +156,8 @@ namespace TodoApi
             return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        public class UserForm {
+        public class UserForm
+        {
             public string Nombre { get; set; } = "";
             public string Apellido { get; set; } = "";
             public string Email { get; set; } = "";

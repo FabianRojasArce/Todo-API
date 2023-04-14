@@ -1,4 +1,5 @@
-namespace TodoApi.Models{
+namespace TodoApi.Models
+{
     public class Tarea
     {
         public int Id { get; set; }
@@ -10,7 +11,7 @@ namespace TodoApi.Models{
         public Listado? Listado { get; set; }
         public int? ListadoId { get; set; }
     }
-    
+
     public enum TiposEstado
     {
         SinEstado = 1,

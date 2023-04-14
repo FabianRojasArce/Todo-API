@@ -1,4 +1,5 @@
-namespace TodoApi.Models{
+namespace TodoApi.Models
+{
     public class Listado
     {
         public int Id { get; set; }

@@ -31,14 +31,21 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterForm form)
     {
         if (
-            form.Email != null &&
-            form.Password != null &&
-            form.ConfirmPassword != null &&
-            form.Nombre != null &&
-            form.Apellido != null
-        ){
+            form.Email != null
+            && form.Password != null
+            && form.ConfirmPassword != null
+            && form.Nombre != null
+            && form.Apellido != null
+        )
+        {
             string userName = form.Email.Split('@')[0];
-            var user = new User { Email = form.Email, UserName = userName, Nombre = form.Nombre, Apellido = form.Apellido };
+            var user = new User
+            {
+                Email = form.Email,
+                UserName = userName,
+                Nombre = form.Nombre,
+                Apellido = form.Apellido
+            };
             var result = await _userManager.CreateAsync(user, form.Password);
             if (result.Succeeded)
             {
@@ -56,23 +63,34 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IResult> Login(LoginForm form)
     {
-        if (form.Email != null && form.Password != null){
+        if (form.Email != null && form.Password != null)
+        {
             var user = await _userManager.FindByEmailAsync(form.Email);
-            if (user == null){
+            if (user == null)
+            {
                 return Results.BadRequest();
             }
             var password = await _userManager.CheckPasswordAsync(user, form.Password);
 
-            if (password) {
-                if (user.UserName != null){
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, form.Password, true, false);
-                    if (result.Succeeded) {
+            if (password)
+            {
+                if (user.UserName != null)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(
+                        user.UserName,
+                        form.Password,
+                        true,
+                        false
+                    );
+                    if (result.Succeeded)
+                    {
                         return Results.Ok();
-                    }else{
+                    }
+                    else
+                    {
                         return Results.BadRequest();
                     }
                 }
-
             }
         }
         return Results.BadRequest();
@@ -85,15 +103,17 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
-    public class LoginForm {
-        public string? Email {get; set; }
-        public string? Password {get; set; }
+    public class LoginForm
+    {
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 
-    public class RegisterForm {
-        public string? Email {get; set; }
-        public string? Password {get; set; }
-        public string? ConfirmPassword {get; set; }
+    public class RegisterForm
+    {
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+        public string? ConfirmPassword { get; set; }
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
     }
@@ -103,7 +123,6 @@ public class AuthController : ControllerBase
     {
         return Ok(User?.Identity?.IsAuthenticated);
     }
-
 
     // [HttpPost]
     // [Route("login")]
@@ -131,6 +150,4 @@ public class AuthController : ControllerBase
     //     }
     //     // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
     // }
-
-
 }

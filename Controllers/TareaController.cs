@@ -91,7 +91,9 @@ namespace TodoApi
             }
 
             var tareas = _context.Tareas
-                .Where(t => t.UserId == usuarioActual.Id && t.Estado == e && t.ListadoId == listadoId)
+                .Where(
+                    t => t.UserId == usuarioActual.Id && t.Estado == e && t.ListadoId == listadoId
+                )
                 .Select(
                     t =>
                         new
@@ -173,16 +175,17 @@ namespace TodoApi
             }
 
             var tablero = _context.Listados.Find(tareaForm.ListadoId);
-            if (tablero == null) 
+            if (tablero == null)
                 return BadRequest();
-                
+
             var tarea = _context.Tareas.Find(id);
             if (tarea == null)
             {
                 return BadRequest();
             }
 
-            if (tarea.ListadoId != tareaForm.ListadoId) {
+            if (tarea.ListadoId != tareaForm.ListadoId)
+            {
                 return BadRequest();
             }
 
@@ -230,9 +233,9 @@ namespace TodoApi
             newTarea.User = currentUser;
             newTarea.UserId = currentUser.Id;
             var tablero = _context.Listados.Find(tarea.ListadoId);
-            if (tablero == null) 
+            if (tablero == null)
                 return BadRequest();
-            
+
             newTarea.Listado = tablero;
             newTarea.ListadoId = tablero.Id;
             currentUser?.Tareas.Add(newTarea);
@@ -241,7 +244,11 @@ namespace TodoApi
 
             tarea.Id = newTarea.Id;
 
-            return CreatedAtAction("GetTareaId", new { id = tarea.Id, listadoId = tarea.ListadoId }, tarea);
+            return CreatedAtAction(
+                "GetTareaId",
+                new { id = tarea.Id, listadoId = tarea.ListadoId },
+                tarea
+            );
         }
 
         [HttpDelete("tareas/{id}")]
@@ -255,13 +262,7 @@ namespace TodoApi
 
             var tarea = _context.Tareas
                 .Where(t => t.UserId == usuarioActual.Id && t.Id == id)
-                .Select(
-                    t =>
-                        new
-                        {
-                            Id = t.Id
-                        }
-                )
+                .Select(t => new { Id = t.Id })
                 .SingleOrDefault();
 
             if (tarea == null)

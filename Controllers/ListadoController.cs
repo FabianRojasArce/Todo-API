@@ -25,7 +25,7 @@ namespace TodoApi
         [HttpGet]
         public async Task<IActionResult> GetTableros()
         {
-          var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
 
             if (usuarioActual == null)
             {
@@ -51,7 +51,7 @@ namespace TodoApi
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTablero(int id)
         {
-          var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
             if (usuarioActual == null)
             {
                 return Unauthorized();
@@ -65,7 +65,7 @@ namespace TodoApi
                         {
                             Id = t.Id,
                             Nombre = $"{t.Nombre}",
-                            Archivado =  t.Archivado
+                            Archivado = t.Archivado
                         }
                 )
                 .SingleOrDefault();
@@ -171,7 +171,6 @@ namespace TodoApi
         [HttpPost]
         public async Task<ActionResult<Listado>> PostTablero(TableroForm tableroForm)
         {
-            
             if (_context.Listados == null)
             {
                 return Problem("Entity set 'TodoContext.Listados' is null.");
