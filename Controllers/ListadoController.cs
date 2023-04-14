@@ -150,6 +150,8 @@ namespace TodoApi
             _context.Listados.Add(newTablero);
             await _context.SaveChangesAsync();
 
+            tableroForm.Id = newTablero.Id;
+
             return CreatedAtAction("GetTablero", new { id = newTablero.Id }, tableroForm);
         }
 

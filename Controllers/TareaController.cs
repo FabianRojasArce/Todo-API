@@ -240,6 +240,8 @@ namespace TodoApi
             _context.Tareas.Add(newTarea);
             await _context.SaveChangesAsync();
 
+            tarea.Id = newTarea.Id;
+
             return CreatedAtAction("GetTarea", new { id = tarea.Id }, tarea);
         }
 
