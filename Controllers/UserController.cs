@@ -68,6 +68,48 @@ namespace TodoApi
             return File(usuarioActual.Foto, "image/jpeg");
         }
 
+        [HttpPut("password")]
+        public async Task<IActionResult> PutUserPassword(ChangePasswordForm form)
+        {
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (usuarioActual == null)
+            {
+                return Unauthorized("Sin usuario");
+            }
+
+            var check = await _userManager.CheckPasswordAsync(usuarioActual, form.CurrentPassword);
+
+            if (check)
+            {
+                if (form.checkPasswords())
+                {
+                    var change = await _userManager.ChangePasswordAsync(
+                        usuarioActual,
+                        form.CurrentPassword,
+                        form.Password
+                    );
+
+                    if (change.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest("No se pudo cambiar");
+                    }
+                }
+                else
+                {
+                    return (BadRequest("Las contraseñas no coinciden"));
+                }
+            }
+            else
+            {
+                return Unauthorized("Falla la contraseña");
+            }
+        }
+
         [HttpPut]
         public async Task<IActionResult> PutUser(UserForm userForm)
         {
@@ -161,6 +203,18 @@ namespace TodoApi
             public string Nombre { get; set; } = "";
             public string Apellido { get; set; } = "";
             public string Email { get; set; } = "";
+        }
+
+        public class ChangePasswordForm
+        {
+            public string CurrentPassword { get; set; } = "";
+            public string Password { get; set; } = "";
+            public string ConfirmPassword { get; set; } = "";
+
+            public bool checkPasswords()
+            {
+                return this.Password == this.ConfirmPassword;
+            }
         }
     }
 }
