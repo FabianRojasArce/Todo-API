@@ -41,11 +41,12 @@ namespace TodoApi
                             Descripcion = $"{t.Descripcion}",
                             Estado = t.Estado,
                             ListadoId = t.ListadoId,
+                            Posicion = t.Posicion,
                         }
                 )
                 .ToList();
 
-            return Ok(tareas);
+            return Ok(tareas.OrderBy( t => t.Posicion));
         }
 
         [HttpGet("listado/{listadoId}/tareas/{id}")]
@@ -67,7 +68,8 @@ namespace TodoApi
                             Nombre = $"{t.Nombre}",
                             Descripcion = $"{t.Descripcion}",
                             Estado = t.Estado,
-                            ListadoId = t.ListadoId
+                            ListadoId = t.ListadoId,
+                            Posicion = t.Posicion,
                         }
                 )
                 .SingleOrDefault();
@@ -103,6 +105,7 @@ namespace TodoApi
                             Descripcion = $"{t.Descripcion}",
                             Estado = t.Estado,
                             ListadoId = t.ListadoId,
+                            Posicion = t.Posicion,
                         }
                 )
                 .ToList();
@@ -112,7 +115,7 @@ namespace TodoApi
                 return NotFound();
             }
 
-            return Ok(tareas);
+            return Ok(tareas.OrderBy( t => t.Posicion));
         }
 
         [HttpPut("tareas/{id}")]
@@ -211,6 +214,58 @@ namespace TodoApi
             return NoContent();
         }
 
+        [HttpPut("tareas/posicion/{id}")]
+        public async Task<IActionResult> PutTareaPosicion(int id, TareaForm tareaForm)
+        {
+            if (id != tareaForm.Id)
+            {
+                return BadRequest();
+            }
+
+            var usuarioActual = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (usuarioActual == null)
+            {
+                return Unauthorized();
+            }
+
+            var tablero = _context.Listados.Find(tareaForm.ListadoId);
+            if (tablero == null)
+                return BadRequest();
+
+            var tarea = _context.Tareas.Find(id);
+            if (tarea == null)
+            {
+                return BadRequest();
+            }
+
+            if (tarea.ListadoId != tareaForm.ListadoId)
+            {
+                return BadRequest();
+            }
+
+            tarea.Posicion = tareaForm.Posicion;
+            _context.Entry(tarea).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TareaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         [HttpPost("tareas")]
         public async Task<ActionResult<Tarea>> PostTarea(TareaForm tarea)
         {
@@ -232,6 +287,7 @@ namespace TodoApi
             newTarea.Descripcion = tarea.Descripcion;
             newTarea.User = currentUser;
             newTarea.UserId = currentUser.Id;
+            newTarea.Posicion = tarea.Posicion;
             var tablero = _context.Listados.Find(tarea.ListadoId);
             if (tablero == null)
                 return BadRequest();
@@ -293,6 +349,7 @@ namespace TodoApi
             public int Id { get; set; }
             public string? Nombre { get; set; }
             public string? Descripcion { get; set; }
+            public int Posicion { get; set; }
             public TiposEstado Estado { get; set; }
             public int ListadoId { get; set; }
         }
